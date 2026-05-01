@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  birthDate    DateTime?
+  gender       String?
+  phone        String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  favorites    Favorite[]
+  orders       Order[]
+}
+
+model Product {
+  id              Int         @id
+  title           String
+  price           Float
+  description     String
+  thumbnail       String
+  rating          Float       @default(0)
+  stock           Int         @default(0)
+  gender          String
+  bestSellerScore Float       @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  favorites       Favorite[]
+  orderItems      OrderItem[]
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  productId Int
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  reference     String      @unique
+  userId        String?
+  customerName  String
+  email         String
+  phone         String
+  whatsapp      String
+  city          String
+  address       String
+  notes         String?
+  paymentMethod String
+  paymentLabel  String
+  paymentDetail String?
+  total         Float
+  status        String      @default("pending")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model OrderItem {
+  id                  String  @id @default(cuid())
+  orderId             String
+  productId           Int
+  qty                 Int
+  price               Float
+  titleSnapshot       String
+  descriptionSnapshot String
+  thumbnailSnapshot   String
+  genderSnapshot      String
+  ratingSnapshot      Float
+  stockSnapshot       Int
+  order               Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product             Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+}
