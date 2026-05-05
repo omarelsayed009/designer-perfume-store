@@ -8,6 +8,8 @@ This project combines a visual storefront with a working backend for authenticat
 
 Designer Perfume Store is a modern shopping experience for browsing, saving, and ordering perfumes. The application supports both a connected backend mode and a local fallback mode, so the front end remains usable even if the API is offline.
 
+The project also includes an admin dashboard for monitoring store activity, reviewing orders, tracking low-stock products, and updating order statuses.
+
 ## Features
 
 - 3D-style perfume coverflow with mouse, touch, wheel, and keyboard support
@@ -18,6 +20,8 @@ Designer Perfume Store is a modern shopping experience for browsing, saving, and
 - Cart drawer with quantity updates and instant totals
 - Checkout flow with cash, card, and PayPal-style demo options
 - Account area with profile editing, favorites, and order history
+- Admin dashboard with sales stats, order management, customer activity, and inventory alerts
+- Role-based admin access
 - Cookie-based authentication with signup, login, logout, and session restore
 - Backend-powered favorites and orders
 - Local fallback mode using `localStorage` when the backend is unavailable
@@ -81,6 +85,7 @@ Tooling:
 5. Save favorites to the account.
 6. Complete checkout with one of the supported payment flows.
 7. Review profile data, favorites, and order history from the account page.
+8. Sign in as an admin to review orders, customers, stock alerts, and update order status.
 
 ## API Modules
 
@@ -99,6 +104,10 @@ The backend currently includes:
 - `DELETE /api/favorites/:productId`
 - `POST /api/orders`
 - `GET /api/orders/me`
+- `GET /api/admin/overview`
+- `GET /api/admin/orders`
+- `GET /api/admin/products`
+- `PATCH /api/admin/orders/:orderId/status`
 
 ## Getting Started
 
@@ -125,6 +134,10 @@ CLIENT_ORIGIN=http://localhost:5173
 DATABASE_URL="file:./dev.db"
 JWT_SECRET=replace-with-a-long-random-secret
 COOKIE_NAME=designer_session
+ADMIN_EMAIL=admin@designer.store
+ADMIN_PASSWORD=Admin123456
+ADMIN_FIRST_NAME=Store
+ADMIN_LAST_NAME=Admin
 ```
 
 ### Database Setup
@@ -153,6 +166,32 @@ Run only the backend:
 ```bash
 npm run dev:server
 ```
+
+### Admin Dashboard
+
+The backend creates a local admin account automatically when the server starts.
+
+Default admin credentials:
+
+```text
+Email: admin@designer.store
+Password: Admin123456
+```
+
+Open the dashboard:
+
+```text
+http://localhost:5173/#/admin
+```
+
+From the dashboard, an admin can:
+
+- Review revenue, customer, order, and inventory totals
+- See the order status pipeline
+- View recent customer accounts
+- Review low-stock products
+- Update order statuses
+- Inspect all orders and order items
 
 ## Available Scripts
 
@@ -184,10 +223,13 @@ Automated smoke test:
 npm run smoke:server
 ```
 
+The smoke test covers the customer flow and the admin flow, including admin login, dashboard API access, and order status updates.
+
 ## Notes
 
 - The card and PayPal flows are demo checkout experiences and do not connect to real payment gateways.
 - The app gracefully falls back to local data when the backend is not available.
+- The admin dashboard requires the backend because it reads live orders and inventory data.
 - `HashRouter` is used to make static deployment easier.
 
 ## What I Focused On
@@ -195,11 +237,12 @@ npm run smoke:server
 - Building a polished shopping flow instead of isolated pages
 - Keeping the front end usable with or without the backend
 - Connecting account, favorites, and checkout into one consistent experience
+- Adding an operational admin dashboard on top of the customer-facing store
 - Creating a backend that is easy to test with Postman and scripted smoke checks
 
 ## Possible Next Steps
 
-- Add admin product management
+- Add full admin product create/edit/delete controls
 - Add image uploads and cloud storage
 - Integrate real payment providers
 - Add unit and integration tests

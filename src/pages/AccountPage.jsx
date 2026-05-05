@@ -69,6 +69,7 @@ export function AccountPage() {
           <small className="account-meta">{favorites.length} favorite perfume{favorites.length === 1 ? '' : 's'} | {orders.length} order{orders.length === 1 ? '' : 's'}</small>
         </div>
         <div className="account-actions">
+          {currentUser?.role === 'admin' ? <Link className="primary" to="/admin">Admin Dashboard</Link> : null}
           <Link className="secondary" to="/checkout">Go To Checkout</Link>
           <Link className="secondary" to="/">Keep Shopping</Link>
           <button className="primary" type="button" onClick={async () => { await logout(); navigate('/login'); }}>Log Out</button>

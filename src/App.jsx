@@ -2,6 +2,7 @@ import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppStoreProvider } from './context/AppStore.jsx';
 import { AppLayout } from './components/Layout.jsx';
 import { AccountPage } from './pages/AccountPage.jsx';
+import { AdminDashboardPage } from './pages/AdminDashboardPage.jsx';
 import { LoginPage, SignupPage } from './pages/AuthPages.jsx';
 import { CheckoutPage } from './pages/CheckoutPage.jsx';
 import { CollectionPage } from './pages/CollectionPage.jsx';
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/account" element={<AccountPage />} />
+            <Route path="/admin" element={<AdminDashboardPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

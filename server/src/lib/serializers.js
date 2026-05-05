@@ -13,6 +13,7 @@ export function serializeUser(user) {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
+    role: user.role || 'customer',
     birthDate: toDateInput(user.birthDate),
     gender: user.gender || '',
     phone: user.phone || '',
@@ -70,5 +71,26 @@ export function serializeOrder(order) {
       price: item.price,
       qty: item.qty
     }))
+  };
+}
+
+export function serializeAdminOrder(order) {
+  return {
+    ...serializeOrder(order),
+    accountUser: order.user ? serializeUser(order.user) : null,
+    itemCount: order.items.reduce((sum, item) => sum + Number(item.qty || 0), 0)
+  };
+}
+
+export function serializeAdminCustomer(user) {
+  return {
+    id: user.id,
+    email: user.email,
+    role: user.role || 'customer',
+    phone: user.phone || '',
+    name: [user.firstName, user.lastName].filter(Boolean).join(' ').trim(),
+    joinedAt: user.createdAt,
+    ordersCount: user._count?.orders || 0,
+    favoritesCount: user._count?.favorites || 0
   };
 }

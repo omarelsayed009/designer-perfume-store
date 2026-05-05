@@ -12,6 +12,10 @@ export function LoginPage() {
     event.preventDefault();
     const result = await login(email, password);
     if (!result.ok) return;
+    if (result.user?.role === 'admin') {
+      navigate('/admin');
+      return;
+    }
     navigate(cartItems.length ? '/checkout' : '/account');
   };
 

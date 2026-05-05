@@ -101,3 +101,22 @@ export function placeOrder(payload) {
     body: JSON.stringify(payload)
   });
 }
+
+export function fetchAdminOverview() {
+  return request('/admin/overview', { method: 'GET' });
+}
+
+export function fetchAdminOrders() {
+  return request('/admin/orders', { method: 'GET' });
+}
+
+export function fetchAdminProducts() {
+  return request('/admin/products', { method: 'GET' });
+}
+
+export function updateAdminOrderStatus(orderId, status) {
+  return request(`/admin/orders/${orderId}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status })
+  });
+}

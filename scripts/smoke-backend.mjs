@@ -1,10 +1,13 @@
 import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:4000';
-const serverEntry = new URL('../server/src/index.js', import.meta.url);
+const serverEntry = fileURLToPath(new URL('../server/src/index.js', import.meta.url));
 const testEmail = `smoke${Date.now()}@example.com`;
 const password = 'secret123';
+const adminEmail = process.env.ADMIN_EMAIL || 'admin@designer.store';
+const adminPassword = process.env.ADMIN_PASSWORD || 'Admin123456';
 
 let cookieHeader = '';
 let serverProcess = null;
@@ -168,6 +171,25 @@ async function run() {
 
   const afterLogout = await requestJson('/api/auth/me', { expectedStatus: 200 });
 
+  const adminLogin = await requestJson('/api/auth/login', {
+    method: 'POST',
+    expectedStatus: 200,
+    body: {
+      email: adminEmail,
+      password: adminPassword
+    }
+  });
+
+  const adminOverview = await requestJson('/api/admin/overview', { expectedStatus: 200 });
+  const adminOrders = await requestJson('/api/admin/orders', { expectedStatus: 200 });
+  const updatedOrder = await requestJson(`/api/admin/orders/${order.order.id}/status`, {
+    method: 'PATCH',
+    expectedStatus: 200,
+    body: {
+      status: 'confirmed'
+    }
+  });
+
   const summary = {
     service: health?.service,
     signupEmail: signup?.user?.email,
@@ -176,7 +198,11 @@ async function run() {
     favoriteCount: favorites?.favorites?.length || 0,
     orderReference: order?.order?.reference || '',
     myOrdersCount: orders?.orders?.length || 0,
-    loggedOut: afterLogout?.user === null
+    loggedOut: afterLogout?.user === null,
+    adminEmail: adminLogin?.user?.email,
+    adminRevenue: adminOverview?.stats?.revenue || 0,
+    adminOrdersCount: adminOrders?.orders?.length || 0,
+    updatedOrderStatus: updatedOrder?.order?.status || ''
   };
 
   console.log(JSON.stringify(summary, null, 2));

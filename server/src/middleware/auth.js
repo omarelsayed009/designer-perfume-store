@@ -33,3 +33,17 @@ export function requireAuth(req, res, next) {
 
   next();
 }
+
+export function requireAdmin(req, res, next) {
+  if (!req.user) {
+    next(createHttpError(401, 'Please sign in first'));
+    return;
+  }
+
+  if (req.user.role !== 'admin') {
+    next(createHttpError(403, 'Admin access only'));
+    return;
+  }
+
+  next();
+}

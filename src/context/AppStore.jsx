@@ -176,6 +176,10 @@ export function AppStoreProvider({ children }) {
   const [serverUser, setServerUser] = useState(null);
   const [serverFavorites, setServerFavorites] = useState([]);
   const [serverOrders, setServerOrders] = useState([]);
+  const [adminOverview, setAdminOverview] = useState(null);
+  const [adminOrders, setAdminOrders] = useState([]);
+  const [adminProducts, setAdminProducts] = useState([]);
+  const [adminLoading, setAdminLoading] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle('dark', theme === 'dark');
@@ -294,6 +298,16 @@ export function AppStoreProvider({ children }) {
 
   const favorites = backendOnline ? serverFavorites : (session.email ? favoritesByUser[session.email] || [] : []);
   const orders = backendOnline ? serverOrders : (session.email ? ordersByUser[session.email] || [] : []);
+  const isAdmin = currentUser?.role === 'admin';
+
+  useEffect(() => {
+    if (!backendOnline || !isAdmin) {
+      setAdminOverview(null);
+      setAdminOrders([]);
+      setAdminProducts([]);
+      setAdminLoading(false);
+    }
+  }, [backendOnline, isAdmin]);
 
   const displayName = (() => {
     const rawName = session.name || '';
@@ -383,6 +397,7 @@ export function AppStoreProvider({ children }) {
     const nextUser = {
       firstName: payload.firstName.trim(),
       lastName: payload.lastName.trim(),
+      role: 'customer',
       birthDate: payload.birthDate,
       gender: payload.gender,
       email,
@@ -407,7 +422,7 @@ export function AppStoreProvider({ children }) {
           phone: result.user.phone || prev.phone || ''
         }));
         showToast(result.message || 'Logged in successfully');
-        return { ok: true };
+        return { ok: true, user: result.user };
       } catch (error) {
         showToast(error.message);
         return { ok: false };
@@ -426,7 +441,8 @@ export function AppStoreProvider({ children }) {
     setSessionState({
       name: fullName,
       email: savedUser.email,
-      phone: savedUser.phone || ''
+      phone: savedUser.phone || '',
+      role: savedUser.role || 'customer'
     });
     setCustomer((prev) => ({
       ...prev,
@@ -435,7 +451,7 @@ export function AppStoreProvider({ children }) {
       phone: savedUser.phone || prev.phone || ''
     }));
     showToast('Logged in successfully');
-    return { ok: true };
+    return { ok: true, user: savedUser };
   };
 
   const logout = async () => {
@@ -448,11 +464,17 @@ export function AppStoreProvider({ children }) {
       setServerUser(null);
       setServerFavorites([]);
       setServerOrders([]);
+      setAdminOverview(null);
+      setAdminOrders([]);
+      setAdminProducts([]);
       showToast('Logged out successfully');
       return;
     }
 
     setSessionState({});
+    setAdminOverview(null);
+    setAdminOrders([]);
+    setAdminProducts([]);
     showToast('Logged out successfully');
   };
 
@@ -662,7 +684,64 @@ export function AppStoreProvider({ children }) {
     };
   };
 
+  const loadAdminDashboard = async () => {
+    if (!backendOnline) {
+      showToast('Admin dashboard requires the backend');
+      return { ok: false, requiresBackend: true };
+    }
+
+    if (!serverUser) {
+      showToast('Please sign in first');
+      return { ok: false, requiresLogin: true };
+    }
+
+    if (!isAdmin) {
+      showToast('Admin access only');
+      return { ok: false, forbidden: true };
+    }
+
+    setAdminLoading(true);
+
+    try {
+      const [overviewResult, ordersResult, productsResult] = await Promise.all([
+        api.fetchAdminOverview(),
+        api.fetchAdminOrders(),
+        api.fetchAdminProducts()
+      ]);
+
+      setAdminOverview(overviewResult);
+      setAdminOrders(ordersResult.orders || []);
+      setAdminProducts(productsResult.products || []);
+      return { ok: true };
+    } catch (error) {
+      showToast(error.message);
+      return { ok: false };
+    } finally {
+      setAdminLoading(false);
+    }
+  };
+
+  const updateAdminOrderStatus = async (orderId, status) => {
+    if (!backendOnline || !serverUser || !isAdmin) {
+      return { ok: false };
+    }
+
+    try {
+      const result = await api.updateAdminOrderStatus(orderId, status);
+      showToast(result.message || 'Order status updated');
+      await loadAdminDashboard();
+      return { ok: true, order: result.order };
+    } catch (error) {
+      showToast(error.message);
+      return { ok: false };
+    }
+  };
+
   const value = {
+    adminLoading,
+    adminOrders,
+    adminOverview,
+    adminProducts,
     allProducts,
     backendOnline,
     cartItems,
@@ -683,14 +762,17 @@ export function AppStoreProvider({ children }) {
     getProductById,
     getProductsForView,
     getRecommendations,
+    isAdmin,
     isFavorite,
     login,
+    loadAdminDashboard,
     logout,
     placeOrder,
     showToast,
     signup,
     toggleFavorite,
     toggleTheme,
+    updateAdminOrderStatus,
     updateProfile,
     addToCart,
     changeCartQuantity,

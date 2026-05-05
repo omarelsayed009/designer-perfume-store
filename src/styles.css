@@ -1250,6 +1250,233 @@ body.dark .detail-image {
 .guest-account {
   align-items: center;
 }
+.admin-shell {
+  margin-top: 34px;
+}
+.admin-overview {
+  align-items: center;
+}
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.admin-stat-card,
+.admin-status-card,
+.admin-order-card {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255,255,255,.72);
+  backdrop-filter: blur(24px);
+  box-shadow: var(--shadow);
+}
+body.dark .admin-stat-card,
+body.dark .admin-status-card,
+body.dark .admin-order-card {
+  background: rgba(20,20,20,.82);
+}
+.admin-stat-card {
+  padding: 20px;
+  display: grid;
+  gap: 10px;
+}
+.admin-stat-card span,
+.admin-status-field span {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.admin-stat-card strong {
+  font-size: clamp(28px, 4vw, 38px);
+  letter-spacing: -.05em;
+}
+.admin-stat-card small {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.admin-grid {
+  margin-top: 0;
+}
+.admin-status-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.admin-status-card {
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.admin-status-card strong {
+  font-size: 24px;
+  letter-spacing: -.04em;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+.status-pill--pending {
+  background: rgba(235, 184, 54, .18);
+  color: #8f5a00;
+}
+.status-pill--confirmed {
+  background: rgba(68, 157, 97, .18);
+  color: #1d723b;
+}
+.status-pill--shipped {
+  background: rgba(44, 125, 255, .16);
+  color: #1f5ece;
+}
+.status-pill--delivered {
+  background: rgba(33, 160, 118, .18);
+  color: #0f7b56;
+}
+.status-pill--cancelled {
+  background: rgba(239, 93, 122, .16);
+  color: #b52f4c;
+}
+.status-pill--low-stock {
+  background: rgba(239, 93, 122, .14);
+  color: #b52f4c;
+}
+body.dark .status-pill--pending {
+  color: #ffd07a;
+}
+body.dark .status-pill--confirmed {
+  color: #8de0a7;
+}
+body.dark .status-pill--shipped {
+  color: #95c2ff;
+}
+body.dark .status-pill--delivered {
+  color: #8ee3c5;
+}
+body.dark .status-pill--cancelled,
+body.dark .status-pill--low-stock {
+  color: #ff9cb0;
+}
+.admin-customer-list,
+.admin-order-list,
+.admin-product-list {
+  margin-top: 18px;
+  display: grid;
+  gap: 14px;
+}
+.admin-customer-row,
+.admin-product-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.admin-customer-row:last-child,
+.admin-product-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.admin-customer-row strong,
+.admin-product-row strong,
+.admin-order-head h3 {
+  font-size: 16px;
+  letter-spacing: -.03em;
+}
+.admin-customer-row p,
+.admin-product-row p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.admin-customer-row small {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--muted);
+}
+.admin-customer-meta,
+.admin-product-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12px;
+  justify-content: flex-end;
+}
+.admin-order-card {
+  padding: 20px;
+}
+.admin-order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.admin-order-head span {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.admin-order-summary {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+.admin-order-summary strong {
+  font-size: 24px;
+  letter-spacing: -.04em;
+}
+.admin-order-summary small,
+.admin-order-account small {
+  color: var(--muted);
+}
+.admin-order-actions {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.admin-order-account {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.admin-status-field {
+  display: grid;
+  gap: 8px;
+}
+.status-select {
+  min-width: 160px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  border-radius: 16px;
+  padding: 12px 14px;
+  font: inherit;
+  color: var(--text);
+}
+.admin-product-list--alerts .admin-product-row {
+  padding-block: 14px;
+}
 :focus-visible {
   outline: 2px solid color-mix(in srgb, var(--accent) 58%, #111);
   outline-offset: 3px;
@@ -1283,10 +1510,18 @@ body.dark .detail-image {
   .auth-shell,
   .checkout-layout,
   .field-grid { grid-template-columns: 1fr; }
+  .admin-stats-grid,
+  .admin-status-grid { grid-template-columns: 1fr; }
   .payment-options { grid-template-columns: 1fr; }
   .details-layout { grid-template-columns: 1fr; padding: 30px 0; gap: 25px; }
   .account-grid { grid-template-columns: 1fr; }
   .account-overview { align-items: flex-start; flex-direction: column; }
+  .admin-customer-row,
+  .admin-product-row,
+  .admin-order-head,
+  .admin-order-actions { flex-direction: column; align-items: flex-start; }
+  .admin-product-meta,
+  .admin-customer-meta { justify-content: flex-start; }
   .account-product { grid-template-columns: 1fr; justify-items: flex-start; }
   .account-product-actions { width: 100%; justify-content: space-between; }
   .history-card-head,
